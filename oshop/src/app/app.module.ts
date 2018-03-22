@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { AngularFireModule } from "angularfire2";
 import { environment } from "../environments/environment";
 import { FormsModule } from "@angular/forms";
-import { AngularFirestoreModule } from "angularfire2/firestore";
 import { AngularFireAuthModule } from "angularfire2/auth";
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
@@ -21,6 +20,9 @@ import { RouterModule } from "@angular/router";
 import { LoginComponent } from './login/login.component';
 import { AuthService } from "./auth.service";
 import { AuthGuardService } from "./auth-guard.service";
+import { UserService } from "./user.service";
+import { AngularFireDatabaseModule } from "angularfire2/database";
+import { AdminAuthGuardService } from "./admin-auth-guard.service";
 
 @NgModule({
   declarations: [
@@ -40,7 +42,7 @@ import { AuthGuardService } from "./auth-guard.service";
     BrowserModule,
     FormsModule,
     NgbModule.forRoot(),
-    AngularFirestoreModule,
+    AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebase),
     RouterModule.forRoot([
@@ -53,13 +55,15 @@ import { AuthGuardService } from "./auth-guard.service";
       {path: 'check-out', component: CheckOutComponent, canActivate: [AuthGuardService]},
       {path: 'order-success', component: OrderSuccessComponent, canActivate: [AuthGuardService]},
 
-      {path: 'admin/products', component: AdminProductsComponent, canActivate: [AuthGuardService]},
-      {path: 'admin/orders', component: AdminOrdersComponent, canActivate: [AuthGuardService]},
+      {path: 'admin/products', component: AdminProductsComponent, canActivate: [AuthGuardService, AdminAuthGuardService]},
+      {path: 'admin/orders', component: AdminOrdersComponent, canActivate: [AuthGuardService, AdminAuthGuardService]},
     ])
   ],
   providers: [
     AuthService,
-    AuthGuardService
+    AuthGuardService,
+    AdminAuthGuardService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })
