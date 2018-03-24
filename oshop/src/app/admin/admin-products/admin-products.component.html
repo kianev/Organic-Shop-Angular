@@ -5,21 +5,36 @@
   <input type="text" class="form-control" placeholder="Search..." #query (keyup)="filter(query.value)">
 </p>
 
-<table class="table">
-  <thead>
-   <tr>
-     <th>Title</th>
-     <th>Price</th>
-     <th></th>
-   </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let p of filteredProducts">
-    <th>{{ p.title }}</th>
-    <th>{{ p.price | currency:'EUR':code}}</th>
-    <th>
-      <a [routerLink]="['/admin/products/' + p.key]">Edit</a>
-    </th>
-  </tr>
-  </tbody>
-</table>
+<data-table
+ [items]="items"
+ [itemCount]="itemCount"
+ (reload)="reloadItems($event)">
+
+ <data-table-column
+  [property]="'title'"
+  [header]="'Title'"
+  [sortable]="true"
+  [resizable]="true">
+ </data-table-column>
+
+   <data-table-column
+     [property]="'price'"
+     [header]="'Price'"
+     [sortable]="true"
+     [resizable]="true">
+     <ng-template #dataTableCell let-item="item">
+      {{ item.price | currency:'EUR':code }}
+     </ng-template>
+ </data-table-column>
+
+  <data-table-column
+    [property]="'key'"
+    [header]="'Price'">
+    <ng-template #dataTableCell let-item="item">
+      <a [routerLink]="['/admin/products/' + item.key]">Edit</a>
+    </ng-template>
+  </data-table-column>
+
+</data-table>
+
+<br>

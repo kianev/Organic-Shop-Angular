@@ -24,8 +24,11 @@ import { UserService } from "./services/user.service";
 import { AngularFireDatabaseModule } from "angularfire2/database";
 import { AdminAuthGuardService } from "./services/admin-auth-guard.service";
 import { ProductFormComponent } from './admin/product-form/product-form.component';
-import {CategoryService} from "./services/category.service";
-import {ProductService} from "./services/product.service";
+import { CategoryService } from "./services/category.service";
+import { ProductService } from "./services/product.service";
+import { DataTableModule } from 'angular5-data-table';
+import { ProductFilterComponent } from './products/product-filter/product-filter.component';
+import { ProductCardComponent } from './product-card/product-card.component';
 
 @NgModule({
   declarations: [
@@ -40,18 +43,21 @@ import {ProductService} from "./services/product.service";
     AdminProductsComponent,
     AdminOrdersComponent,
     LoginComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    ProductFilterComponent,
+    ProductCardComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     CustomFormsModule,
     NgbModule.forRoot(),
+    DataTableModule,
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebase),
     RouterModule.forRoot([
-      {path: '', component: HomeComponent},
+      {path: '', component: ProductsComponent},
       {path: 'products', component: ProductsComponent},
       {path: 'shopping-cart', component: ShoppingCartComponent},
       {path: 'login', component: LoginComponent},
