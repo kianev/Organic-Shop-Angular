@@ -29,6 +29,7 @@ import { ProductService } from "./services/product.service";
 import { DataTableModule } from 'angular5-data-table';
 import { ProductFilterComponent } from './products/product-filter/product-filter.component';
 import { ProductCardComponent } from './product-card/product-card.component';
+import {ShoppingCartService} from "./services/shopping-cart.service";
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { ProductCardComponent } from './product-card/product-card.component';
     AdminAuthGuardService,
     CategoryService,
     ProductService,
+    ShoppingCartService,
     UserService
   ],
   bootstrap: [AppComponent]
