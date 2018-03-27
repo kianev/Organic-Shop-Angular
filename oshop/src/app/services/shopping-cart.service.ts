@@ -1,36 +1,20 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from "angularfire2/database";
+import {AngularFireDatabase, AngularFireObject} from "angularfire2/database";
 import { Product } from "../models/product";
 import 'rxjs/add/operator/take';
+import {ShoppingCart} from "../models/shopping-cart";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class ShoppingCartService {
   item;
   productKey;
-  constructor(private db: AngularFireDatabase) { }
 
-  private create() {
-   return this.db.list('/shopping-carts').push({
-      dateCreated: new Date().getTime()
-    });
-  }
+  constructor(private db: AngularFireDatabase, private router: Router) {}
 
-  private getItem(cartId: string, productId: string) {
-    return this.db.object('/shopping-carts/' + cartId + /items/ + productId);
-  }
-
-   async getCart() {
-     let cartId = await this.getOrCreateCartId();
-     return this.db.object('/shopping-carts/' + cartId);
-  }
-
-   private async getOrCreateCartId(): Promise<string> {
-    let cartId = localStorage.getItem('cartId');
-    if(cartId) return cartId;
-
-    let result = await this.create();
-      localStorage.setItem('cartId', result.key);
-      return result.key;
+  async getCart(): Promise<AngularFireObject<ShoppingCart>> {
+    let cartId = await this.getOrCreateCartId();
+    return this.db.object('/shopping-carts/' + cartId);
   }
 
   async addToCart(product: Product) {
@@ -53,6 +37,37 @@ export class ShoppingCartService {
     item$.valueChanges().take(1).subscribe(item => {
       item$.update({ quantity: (item as any).quantity - 1});
     });
+  }
+
+  async removeZeroQuantity(product: Product) {
+    let cartId = await this.getOrCreateCartId();
+    this.getItem(cartId, product.key).remove();
+  }
+
+  async clearCart() {
+    let cartId = await this.getOrCreateCartId();
+
+    this.db.object('/shopping-carts/' + cartId + '/items').remove();
+    this.router.navigate(['/']);
+  }
+
+  private create() {
+   return this.db.list('/shopping-carts').push({
+      dateCreated: new Date().getTime()
+    });
+  }
+
+  private getItem(cartId: string, productId: string) {
+    return this.db.object('/shopping-carts/' + cartId + /items/ + productId);
+  }
+
+   private async getOrCreateCartId(): Promise<string> {
+    let cartId = localStorage.getItem('cartId');
+    if(cartId) return cartId;
+
+    let result = await this.create();
+      localStorage.setItem('cartId', result.key);
+      return result.key;
   }
 
 

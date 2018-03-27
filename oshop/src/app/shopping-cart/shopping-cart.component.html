@@ -1,3 +1,42 @@
-<p>
-  shopping-cart works!
-</p>
+<h2>Shopping Cart</h2>
+ <div class="row col-10" *ngIf="cart; else noItems">
+  <p>You have {{ totalItems }} items in your shopping cart.</p>
+   <button class="btn btn-light btn-sm mb-2  ml-auto" (click)="clearCart()">Clear Shopping Cart</button>
+   <table class="table">
+     <thead>
+     <tr>
+       <th></th>
+       <th>Product</th>
+       <th class="text-center" style="width: 230px">Quantity</th>
+       <th class="text-right" style="width: 200px">Price</th>
+     </tr>
+     </thead>
+     <tbody>
+       <tr *ngFor="let productId of productIds">
+           <td>
+             <div [style.backgroundImage]="'url(' + cart.items[productId].product.imageUrl + ')'" class="thumbnail"></div>
+           </td>
+           <td>{{ cart.items[productId].product.title }}</td>
+           <td>
+             <app-product-quantity [product]="cart.items[productId].product" [shopping-cart]="cart"></app-product-quantity>
+           </td>
+           <td class="text-right">{{ (cart.items[productId].product.price * cart.items[productId].quantity) | currency:'EUR':code }}</td>
+       </tr>
+     </tbody>
+     <tfoot>
+       <tr>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th class="text-right">{{ totalPrice | currency:'EUR':code }}</th>
+       </tr>
+     </tfoot>
+   </table>
+   <a *ngIf="totalItems" class="btn btn-primary" routerLink="/check-out">Go To Checkout</a>
+ </div>
+<br>
+
+ <ng-template #noItems>
+   <p>You have 0 items in your shopping cart.</p>
+   <a class="btn btn-secondary" routerLink="/">Back to shop</a>
+ </ng-template>
