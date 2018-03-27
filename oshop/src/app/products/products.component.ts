@@ -10,17 +10,14 @@ import {ShoppingCartService} from "../services/shopping-cart.service";
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent implements OnDestroy, OnInit{
+export class ProductsComponent {
   products = [];
   filteredProducts = [];
   category: string;
   cart: any;
-  productSubscription: Subscription;
-  cartSubscription: Subscription;
 
   constructor(productService: ProductService, route: ActivatedRoute, private shoppingCartService: ShoppingCartService) {
-    this.productSubscription = productService
-      .getAll().snapshotChanges()
+    productService.getAll().snapshotChanges()
       .map(actions => {
         return actions.map(action => ({key: action.key, ...action.payload.val()}))
       })
@@ -38,14 +35,9 @@ export class ProductsComponent implements OnDestroy, OnInit{
   }
 
   async ngOnInit() {
-    this.cartSubscription = (await this.shoppingCartService.getCart()).valueChanges()
+    (await this.shoppingCartService.getCart()).valueChanges()
       .subscribe(cart => {
       this.cart = cart;
     });
-  }
-
-  ngOnDestroy(){
-    this.productSubscription.unsubscribe();
-    this.cartSubscription.unsubscribe();
   }
 }
