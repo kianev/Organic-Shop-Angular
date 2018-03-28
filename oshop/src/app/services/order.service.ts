@@ -10,4 +10,12 @@ export class OrderService {
    return this.db.list('/orders').push(order);
   }
 
+  getOrdersByUser(userId: string) {
+    return this.db.list('/orders', ref => ref.orderByChild('userId'));
+  }
+
+  getOrders() {
+    return this.db.list('/orders');
+  }
+
 }
